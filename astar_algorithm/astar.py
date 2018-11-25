@@ -1,3 +1,5 @@
+from node import Node
+
 class Astar:
 
 
