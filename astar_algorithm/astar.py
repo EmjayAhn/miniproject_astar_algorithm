@@ -95,5 +95,11 @@ class Astar:
 
 
     # non-open 애들은 F값 계산
+<<<<<<< HEAD
     def tmp_noopen(self, tmp_noopen:
         return 'a'
+=======
+    def tmp_noopen(self, tmp_noopen):
+
+# add by minjae
+>>>>>>> 9637935f14e6c96960c365b4c35fb840ae854ed0
