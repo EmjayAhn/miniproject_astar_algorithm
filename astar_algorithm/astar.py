@@ -38,6 +38,7 @@ class Astar:
         self.maze[start_location] = start
         goal.location = goal_location
         self.maze[goal_location] = goal
+        pass
 
 
     def sorting_open(self, opened_list):
