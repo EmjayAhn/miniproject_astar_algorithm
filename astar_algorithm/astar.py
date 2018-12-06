@@ -27,8 +27,29 @@ class Astar:
         self.path = list()
 
 
-    def encode_map(self, maze_map):
-        pass
+    def encode_map(self):
+
+        # 외곽벽 추가
+        EXIT_ROW = len(self.maze_map)    # 행의 갯수
+        EXIT_COL = len(self.maze_map[0]) # 열의 갯수
+
+        for row in self.maze_map:        # 첫번째열 마지막열 1로 채운다
+            row.insert(0, 1)
+            row.append(1)
+
+        added_row = [1 for _ in range(EXIT_COL+2)]  # 첫번째행, 마지막행 1로 채운다
+        self.maze_map.insert(0, added_row)
+        self.maze_map.append(added_row)
+
+
+        # x,y 좌표 직관적으로 바꾸기
+        # maze_dict location node 할당
+        for y, row in enumerate(self.maze_map):
+            y = len(self.maze_map) - (y+1)
+            for x, value in enumerate(self.maze_map[y]):
+                self.maze_dict[(x,y)] = Node(location =(x,y))
+                if value == 1:
+                    self.barrier_list.append((x,y))
 
 
     def search_around(self, NODE):
@@ -75,12 +96,20 @@ class Astar:
         NODE.F = NODE.G + NODE.H
 
 
-    def calculate(self, node):
-        pass
+    def start_goal(self):
+        start_location = self.START.location
+        goal_location = self.GOAL.location
 
+        # START G,H value
+        G = 0
+        H = abs((goal_location[0]-start_location[0]) + (goal_location[1]-start_location[1]))
 
-    def start_goal(self, maze_map, start_location, goal_location):
-        pass
+        # START NODE H value
+        self.START.H = H
+
+        # START NODE and GOAL NODE maze dict에 할당
+        self.maze_dict[start_location] = self.START
+        self.maze_dict[goal_location] = self.GOAL
 
 
     def push_open(self, location):
