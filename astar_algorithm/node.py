@@ -1,4 +1,6 @@
 class Node:
+
+    
     def __init__(self, G=0, H=0, parent=None, location=None):
 
         self.G = G
