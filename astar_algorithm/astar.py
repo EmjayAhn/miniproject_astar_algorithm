@@ -1,4 +1,5 @@
-from node import Node
+# from node import Node
+import numpy as np
 
 class Astar:
 
@@ -14,6 +15,7 @@ class Astar:
         (-1, 0):10
     }
 
+
     def __init__(self, maze_map, start, goal):
         self.maze_dict = dict()
         self.maze_map = maze_map
@@ -22,7 +24,6 @@ class Astar:
         self.barrier_list = list()
         self.START = Node(location=start)
         self.GOAL = Node(location=goal)
-
         self.path = list()
 
 
@@ -30,11 +31,23 @@ class Astar:
         pass
 
 
-    def search_around(self, node):
-        pass
+    def search_around(self, NODE):
+
+        # 일단 search하는 중심 노드는 closed_list에 추가
+        self.closed_list.append(NODE.location)
+
+        # 주변 노드 좌표 리스트 생성
+        around_nodes = list(map(tuple, np.array(list(Astar.DIR.keys())) + NODE.location))
+
+        # 좌표가 음수인 노드까지 찾는 경우 빼줌 (지도를 벗어나는 경우)
+        around_nodes = [i for i in around_nodes if ((i[0] >= 0) and (i[1] >= 0))]
+
+        return around_nodes
+
 
     def astar_algorithm(self, CUR, cur_around):
         pass
+
 
     def calculate(NODE):
         ```
@@ -61,13 +74,48 @@ class Astar:
         #F 값계산
         NODE.F = NODE.G + NODE.H
 
+
+    def calculate(self, node):
+        pass
+
+
     def start_goal(self, maze_map, start_location, goal_location):
         pass
 
+
     def push_open(self, location):
-        pass
+
+        # search_around 함수와 동일하게 around_nodes 리스트 생성
+        around_nodes = list(map(tuple, np.array(list(Astar.DIR.keys())) + location))
+        around_nodes = [i for i in around_nodes if ((i[0] >= 0) and (i[1] >= 0))]
+
+        # around_nodes 중 barrier인 노드를 걸러내기 위해 tmp_barrier 리스트 생성
+        tmp_barrier = []
+
+        # around_nodes 중 barrier_list에 있는 노드가 있다면
+        # 그 노드를 포함해서 상/하/좌/우 에 있는 노드까지 tmp_barrier로 취급하여
+        # 5개의 노드를 tmp_barrier에 추가
+        for i in around_nodes:
+            if i in barrier_list:
+                i_east = tuple(np.array(i) + np.array([1, 0]))
+                i_west = tuple(np.array(i) + np.array([-1, 0]))
+                i_north = tuple(np.array(i) + np.array([0, 1]))
+                i_south = tuple(np.array(i) + np.array([0, -1]))
+                tmp_barrier.extend([i, i_east, i_west, i_north, i_south])
+
+        # 다시 around_nodes를 검색하여
+        # opened_list, tmp_barrier 모두에 없는 노드만 opened_list에 추가
+        for i in around_nodes:
+            if (i not in tmp_barrier) and (i not in opened_list):
+                self.opened_list.append(i)
+
+
+    def sorting_open(self, opened_list):
+        sort_open = [(i, maze_dict[i].F) for i in opened_list]
+        opened_list = [j[0] for j in sorted(sort_open, key=lambda i: i[1])]
+        return opened_list
+
 
     def maze_solver(self, maze_map, start_location, goal_location):
-
         pass
-        #return self.GOAL.G, self.path
+        # return self.GOAL.G, self.path
