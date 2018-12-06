@@ -67,7 +67,21 @@ class Astar:
 
 
     def astar_algorithm(self, CUR, cur_around):
-        pass
+        for i in cur_around:
+            if i in self.opened_list:
+                new_G = CUR.G + self.DIR[(self.maze_dict[i].location[0] - CUR.location[0], self.maze_dict[i].location[1] - CUR.location[1])]
+                old_G = self.maze_dict[i].G
+                if new_G >= old_G:
+                    continue
+                else:
+                    self.maze_dict[i].parent = CUR.location
+            elif (i in self.closed_list) | (i in barrier_list):
+                continue
+            else:
+                calculate(self.maze_dict[i])
+                push_open(i)
+                self.maze_dict[i].parent = CUR.location
+
 
 
     def calculate(NODE):
