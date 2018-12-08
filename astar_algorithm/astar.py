@@ -101,7 +101,7 @@ class Astar:
         #이것을 알아야 10을 더할지 14를 더할지 DIR 에서 선택할 수 있다.
         direction = NODE.location[0] - NODE.parent[0], NODE.location[1] - NODE.parent[1]
         #G 값계산
-        NODE.G = self.maze_dict[NODE.parent].G + DIR[direction]
+        NODE.G = self.maze_dict[NODE.parent].G + self.DIR[direction]
         #H 값계산
         NODE.H = (abs(self.GOAL.location[0] - NODE.location[0]) + \
         abs(self.GOAL.location[1] - NODE.location[1])) * 10
