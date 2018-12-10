@@ -4,7 +4,6 @@ import numpy as np
 
 class Astar:
 
-
     DIR = {
         (-1, 1): 14,
         (0, 1): 10,
@@ -15,6 +14,7 @@ class Astar:
         (-1, -1): 14,
         (-1, 0):10
     }
+
 
     def __init__(self, maze_map, start, goal):
         self.maze_dict = dict()
@@ -28,7 +28,6 @@ class Astar:
 
 
     def encode_map(self):
-
         # 외곽벽 추가
         EXIT_ROW = len(self.maze_map)    # 행의 갯수
         EXIT_COL = len(self.maze_map[0]) # 열의 갯수
@@ -51,6 +50,7 @@ class Astar:
                 if value == 1:
                     self.barrier_list.append((x_loc, y_loc))
 
+
     def start_goal(self):
         start_location = self.START.location
         goal_location = self.GOAL.location
@@ -67,18 +67,13 @@ class Astar:
         self.maze_dict[goal_location] = self.GOAL
 
 
-
-
     def search_around(self, NODE):
-
         # 일단 search하는 중심 노드는 closed_list에 추가
         self.closed_list.append(NODE.location)
-
         # 주변 노드 좌표 리스트 생성
         around_nodes = list(map(tuple, np.array(list(Astar.DIR.keys())) + NODE.location))
 
         return around_nodes
-
 
 
     def astar_algorithm(self, CUR, cur_around):
@@ -98,8 +93,6 @@ class Astar:
                 self.maze_dict[i].parent = CUR.location
 
 
-
-
     def calculate(self, NODE):
         '''
         parameter : NODE - Node() 자료구조
@@ -112,10 +105,10 @@ class Astar:
         NODE.F 의 경우, NODE.G와 NODE.H를 더합니다.
         '''
         #Testing 을 클래스 밖에서 간단하게 해서 잘 돌아갔으나, class 안에서 다시한번 해볼 필요가 있습니다.
-
         #NODE 가 부모로부터 어느 방향으로부터 왔는가
         #이것을 알아야 10을 더할지 14를 더할지 DIR 에서 선택할 수 있다.
         direction = NODE.location[0] - NODE.parent[0], NODE.location[1] - NODE.parent[1]
+
         #G 값계산
         NODE.G = self.maze_dict[NODE.parent].G + self.DIR[direction]
         #H 값계산
@@ -125,21 +118,15 @@ class Astar:
         NODE.F = NODE.G + NODE.H
 
 
-
-
-
     def push_open(self, location):
-
         # search_around 함수와 동일하게 around_nodes 리스트 생성
         around_nodes = list(map(tuple, np.array(list(Astar.DIR.keys())) + location))
-        print(around_nodes)
 
         location_NE = tuple(np.array(location) + np.array([1, 1]))
         location_NW = tuple(np.array(location) + np.array([-1, 1]))
         location_SE = tuple(np.array(location) + np.array([1, -1]))
         location_SW = tuple(np.array(location) + np.array([-1, -1]))
 
-<<<<<<< HEAD
         diagonal_path = [location_NE, location_NW, location_SW, location_SE]
         diagonal_location_direction = [[(-1,0),(0,-1)],[(1,0),(0,-1)],[(0,1),(1,0)],[(0,1),(-1,0)]]
         print(diagonal_path)
@@ -154,11 +141,11 @@ class Astar:
                     self.opened_list.append(location[0])
 
 
-
     def sorting_open(self, opened_list):
         sort_open = [(i, self.maze_dict[i].F) for i in opened_list]
         opened_list = [j[0] for j in sorted(sort_open, key=lambda i: i[1])]
         return opened_list
+
 
     # , maze_map, start_location, goal_location
     def maze_solver(self):
