@@ -1,4 +1,3 @@
-from node import Node
 import numpy as np
 
 
@@ -85,10 +84,10 @@ class Astar:
                     continue
                 else:
                     self.maze_dict[i].parent = CUR.location
-            elif (i in self.closed_list) | (i in barrier_list):
+            elif (i in self.closed_list) | (i in self.barrier_list):
                 continue
             else:
-                calculate(self.maze_dict[i])
+                self.calculate(self.maze_dict[i])
                 self.push_open(i)
                 self.maze_dict[i].parent = CUR.location
 
@@ -141,9 +140,11 @@ class Astar:
                     self.opened_list.append(location[0])
 
 
-    def sorting_open(self, opened_list):
+
+    def sorting_open(self, opened_list, reverse=False):
+
         sort_open = [(i, self.maze_dict[i].F) for i in opened_list]
-        opened_list = [j[0] for j in sorted(sort_open, key=lambda i: i[1])]
+        opened_list = [j[0] for j in sorted(sort_open, key=lambda i: i[1], reverse=reverse)]
         return opened_list
 
 
@@ -157,7 +158,17 @@ class Astar:
 
         while self.GOAL.location not in cur_around:
             self.astar_algorithm(CUR, cur_around)
-            sorting_open(re)
+            sorting_open(reverse=True)
+            CUR = self.maze_dict[self.opened_list.pop()]
+            cur_around = self.search_around(CUR)
 
-        return cur_around
-        # return self.GOAL.G, self.path
+        self.GOAL.G = CUR.G + self.DIR[self.GOAL.location[0] - CUR.location[0],\
+                                 self.GOAL.loaction[1] - CUR.loaction[1]]
+        self.GOAL.parent = CUR.location
+
+        while CUR.location != self.START.location:
+            self.path.append(CUR.location)
+            CUR = self.maze_dict[CUR.parent]
+        self.path.reverse()
+
+        return self.path, self.GOAL.G
