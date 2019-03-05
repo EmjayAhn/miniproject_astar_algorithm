@@ -1,5 +1,3 @@
-import time
-
 class Node:
 
 
@@ -80,13 +78,12 @@ class Astar:
         if NODE.location not in self.closed_list:
             self.closed_list.append(NODE.location)
         # 주변 노드 좌표 리스트 생성
-        around_nodes = [(i[0][0] + i[1][0], i[0][1] + i[1][1]) for i in zip(self.DIR.keys(), [list(NODE.location) for _ in range(8)])]
+        around_nodes = [(i[0][0] + i[1][0], i[0][1] + i[1][1]) for i in \
+                         zip(self.DIR.keys(), [list(NODE.location) for _ in range(8)])]
 
         for i in around_nodes:
             if not self.maze_dict[i].parent:
                 self.maze_dict[i].parent = NODE.location
-#             print("i", i, "cur", self.CUR.location, "parent", self.maze_dict[i].parent)
-            #self.calculate(self.maze_dict[i])
 
         return around_nodes
 
@@ -119,9 +116,6 @@ class Astar:
         NODE.H 의 경우, self.GOAL 까지의 거리 입니다. 이 거리는 Manhattan Path Scoring 방법을 사용합니다.
         NODE.F 의 경우, NODE.G와 NODE.H를 더합니다.
         '''
-        #Testing 을 클래스 밖에서 간단하게 해서 잘 돌아갔으나, class 안에서 다시한번 해볼 필요가 있습니다.
-        #NODE 가 부모로부터 어느 방향으로부터 왔는가
-        #이것을 알아야 10을 더할지 14를 더할지 DIR 에서 선택할 수 있다.
         direction = NODE.location[0] - NODE.parent[0], NODE.location[1] - NODE.parent[1]
         #G 값계산
         NODE.G = self.maze_dict[NODE.parent].G + self.DIR[direction]
@@ -152,7 +146,6 @@ class Astar:
                 self.CUR = self.maze_dict[self.opened_list.pop()]
                 cur_around = self.search_around(self.CUR)
 
-
         self.GOAL.G = self.CUR.G + self.DIR[self.GOAL.location[0] - self.CUR.location[0],\
                                             self.GOAL.location[1] - self.CUR.location[1]]
         self.GOAL.parent = self.CUR.location
@@ -172,17 +165,7 @@ x = 6
 y = 8
 
 # maze_map = [[0 for _ in range(x)] for _ in range(y)] # list comprehension
-# maze_map = [[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
-#             [0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-#             [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-#             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],]
+
 maze_map = [[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0],
             [0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
@@ -205,6 +188,7 @@ maze_map = [[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
             [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],]
+
 init_maze_map_x = len(maze_map[0])
 init_maze_map_y = len(maze_map)
 
@@ -212,7 +196,7 @@ start = (0, 0)
 goal = (17, 20)
 
 maze = Astar(maze_map, start, goal)
-paths, G = maze.maze_solver()
+paths, total_G = maze.maze_solver()
 
 w = 30 # width of each cell
 
@@ -231,10 +215,6 @@ def draw():
     vv_goal_y = goal[0] + 1
     maze.maze_map[vv_start_x][vv_start_y] = -1
     maze.maze_map[vv_goal_x][vv_goal_y] = -1
-
-
-    # if mousePressed:
-    #     fill(0)
 
     x, y = 0, 0 # starting position
 
